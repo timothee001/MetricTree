@@ -5,6 +5,7 @@
 
 Node::Node()
 {
+	this->id= reinterpret_cast<uint32_t>(this);
 }
 
 void Node::setPivot(Point pivot)
@@ -76,10 +77,12 @@ Node::~Node()
 
 ostream & operator<<(ostream & os, const Node & mt)
 {
-	os << "Begin Node --------------------- " << endl;
+	if(&mt!=NULL){
+	os << "Begin Node "<< mt.id <<"--------------------- " << endl;
 	os << "isLeaf " << mt.isLeaf << endl;
 	os << "Pivot : " << mt.pivot << endl;
 	os << "d1 : " << mt.d1 << " d2 : " << mt.d2<< " d3 : " << mt.d3 << " d4 : " << mt.d4 << endl;
 	os << "End Node --------------------- " << endl;
+	}
 	return os;
 }

@@ -6,7 +6,9 @@ class Node
 	float d1, d2, d3, d4;
 	bool isLeaf;
 public:
+	
 	Node();
+	uint32_t id;
 	Node * left;
 	Node * right;
 	void setPivot(Point pivot);
