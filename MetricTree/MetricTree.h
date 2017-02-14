@@ -12,6 +12,7 @@ class MetricTree
 	int nodeCount = 0;
 	vector<Node*> allNodes;
 public:
+	int numberOfNodeExplored = 0;
 	Node *root;
 	Point nearestNeighbour;
 	int getNodeCount();

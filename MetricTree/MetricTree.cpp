@@ -235,42 +235,50 @@ void MetricTree::buildMetricTree2(vector<Point> listPoints, Node * currentNode)
 
 bool MetricTree::search_MetricTree(Node *T, Point *q)
 {
+	
+	cout << "Node explored n° : " << this->numberOfNodeExplored << endl;
 	cout << "search Metric function called " << endl;
 	cout << "Current Node explored : " << *T << endl;
-	float tau = std::numeric_limits<float>::max();
+
+	float tau = 0.0;
+	if (this->numberOfNodeExplored==0.0) {
+		tau = std::numeric_limits<float>::max();
+	}
 	Point pivot = T->getPivot();
 
 	if (T->isALeaf()) {
 		return false;
 	}
 	else {
-		cout << "On the left " << *(T->left) << endl;
-		cout << "On the right " << *(T->right) << endl;
-
+		/*cout << "On the left " << *(T->left) << endl;
+		cout << "On the right " << *(T->right) << endl;*/
 	}
 
 	float I = this->euclidianSpace->EuclidianDistance(pivot, *q);
-	cout << "I : " << I << endl;
+	
 
 	if (I < tau) {
 		tau = I;
 		this->nearestNeighbour = pivot;
 	}
 
-	cout << "tau : " << tau << endl;
+	
 
 	float Ilmin = T->getD(1) - tau;
 	float Ilmax = T->getD(2) + tau;
 	float Irmin = T->getD(3) - tau;
 	float Irmax = T->getD(4) + tau;
 
-
+	cout << "I : " << I << endl;
+	cout << "tau : " << tau << endl;
 	cout << "Ilmin : " << Ilmin << endl;
 	cout << "Ilmax : " << Ilmax << endl;
 	cout << "Irmin : " << Irmin << endl;
 	cout << "Irmax : " << Irmax << endl <<endl;
 
 	if ((I >= Ilmin) & (I <= Ilmax)) {
+		cout << "I : " << I << " Ilmin : " << Ilmin << " Ilmax : " << Ilmax << endl;
+		this->numberOfNodeExplored++;
 		cout << "We search left node " << endl;
 		if (T->isALeaf()) {
 			cout << "We reach the leaf " << endl;
@@ -280,6 +288,8 @@ bool MetricTree::search_MetricTree(Node *T, Point *q)
 	}
 
 	if ((I >= Irmin) & (I <= Irmax)) {
+		cout << "I : " << I << " Irmin : " << Irmin << " Irmax : " << Irmax << endl;
+		this->numberOfNodeExplored++;
 		cout << "We search right node " << endl;
 		if (T->isALeaf()) {
 			cout << "We reach the leaf " << endl;
