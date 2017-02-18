@@ -8,8 +8,9 @@ class EuclidianSpace
 	vector<Point> points;
 	int pointsCount;
 	int dimensionSize;
-	int bound;
+	
 public:
+	int bound;
 	EuclidianSpace(int pointsCount, int pointsDimension,int dimensionSize, int bound);
 	EuclidianSpace(int pointsCount, int pointsDimension, int dimensionSize, int bound, float mean, float stdDev);
 	Point getPointAt(int pos);
