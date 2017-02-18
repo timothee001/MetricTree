@@ -13,6 +13,10 @@ Point::Point(int dimension,float maxValue)
 	this->point = new float[dimension];
 	for (int i = 0; i < dimension; i++) {
 		float randN= static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / maxValue));
+		int randomval = rand() % 2;
+		if (randomval == 1) {
+			randN = -randN;
+		}
 		this->point[i] = randN;
 	}
 }
@@ -26,6 +30,11 @@ Point::Point(int dimension, float maxValue, float mean, float stdDev)
 	for (int i = 0; i < dimension; i++) {
 		
 		float randN = distribution(generator);
+
+		while (randN<-maxValue || randN>maxValue) {
+			randN = distribution(generator);
+		}
+
 		this->point[i] = randN;
 	}
 }

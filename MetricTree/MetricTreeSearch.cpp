@@ -35,25 +35,34 @@ using namespace std;
 int main()
 {
 	srand(time(NULL));
-	EuclidianSpace e(40, 10, 10, 10, 100, 500);
+	EuclidianSpace e(40, 10, 10, 1000, 100, 500);
 	cout <<"Euclidian space"<<endl<< e<<endl;
 	MetricTree mt(&e);
-	mt.buildMetricTreeBasic(e.getAllPoints(),mt.root);
-	//cout << mt <<endl;
+	mt.buildMetricTreeBasic(e.getAllPoints(), mt.root);
 	int searchPointId = 2;
+	mt.searchMetricTreePrunning(&mt.getRoot(), &e.getPointAt(searchPointId));
+	cout << "we searched :" << e.getPointAt(searchPointId) << endl;
+	cout << "Number of node explored  (without optimizaion): " << mt.numberOfNodeExplored << endl;
+
+	MetricTree mt2(&e);
+	mt2.buildMetricTreeOptimized(e.getAllPoints(), mt2.root);
+	mt2.searchMetricTreePrunning(&mt2.getRoot(), &e.getPointAt(searchPointId));
+	cout << "we searched :" << e.getPointAt(searchPointId) << endl;
+	cout << "Number of node explored (with optimizaion): " << mt2.numberOfNodeExplored << endl;
 
 
+	//mt.buildMetricTreeBasic(e.getAllPoints(),mt.root);
+	//cout << mt <<endl;
+	
 
-	mt.searchMetricTreeDefeatist(&mt.getRoot(), &e.getPointAt(searchPointId));
-	//mt.searchMetricTreePrunning(&mt.getRoot(), &e.getPointAt(searchPointId));
+	//mt.searchMetricTreeDefeatist(&mt.getRoot(), &e.getPointAt(searchPointId));
+
 	//cout << "NN found : " << mt.nearestNeighbour << endl;
 	//cout << mt << endl;
 
 	//cout << "Root" << mt.getRoot();
 
 
-	cout << "we searched :" << e.getPointAt(searchPointId) << endl;
-	cout << "Number of node explored : " << mt.numberOfNodeExplored << endl;
 
 	system("pause");
     return 0;

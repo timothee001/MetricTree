@@ -20,6 +20,7 @@ public:
 	MetricTree(EuclidianSpace* euclidianSpace);
 	void buildMetricTreeBasic(vector<Point> listPoints, Node *currentNode);
 	void buildMetricTreeOptimized(vector<Point> listPoints, Node *currentNode);
+	Point getBestPivot(vector<Point> listPoints);
 	bool searchMetricTreePrunning(Node *T, Point *q);
 	bool searchMetricTreeDefeatist(Node *T, Point *q);
 	static float median(vector<float> scores);

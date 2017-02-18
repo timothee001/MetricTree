@@ -113,6 +113,130 @@ void MetricTree::buildMetricTreeBasic(vector<Point> listPoints, Node * currentNo
 
 void MetricTree::buildMetricTreeOptimized(vector<Point> listPoints, Node * currentNode)
 {
+	this->allNodes.push_back(currentNode);
+	if (listPoints.size() <= 1) {
+		currentNode->setLeafTrue();
+		if (listPoints.size() == 1) {
+			currentNode->setPivot(listPoints.at(0));
+		}
+	}
+	else {
+
+		int listPointsSize = listPoints.size();
+		int randNumberOfPoints = 1 + (rand() % (int)(listPointsSize));
+		vector<int> pointsSelected;
+		do {
+			int randNum = (rand() % (int)(listPointsSize));
+			if (!(find(pointsSelected.begin(), pointsSelected.end(), randNum) != pointsSelected.end())) {
+				pointsSelected.push_back(randNum);
+			}
+		} while (pointsSelected.size() < randNumberOfPoints);
+
+		vector<Point> pointsSelectedValues;
+		for (int i = 0; i < pointsSelected.size(); i++) {
+			pointsSelectedValues.push_back(listPoints.at(pointsSelected.at(i)));
+		}
+
+		Point optimizedPivot = this->getBestPivot(pointsSelectedValues);
+
+
+		currentNode->setPivot(optimizedPivot);
+		map<Point*, float> m;
+		vector<float> allDistances;
+		for (int i = 0; i < randNumberOfPoints; i++) {
+			float dist = this->euclidianSpace->EuclidianDistance(optimizedPivot, listPoints.at(pointsSelected.at(i)));
+			m[&listPoints.at(pointsSelected.at(i))] = dist;
+			allDistances.push_back(dist);
+		}
+		float median = this->median(allDistances);
+		vector<Point> leftTree;
+		vector<Point> rightTree;
+		map<Point*, float> m2;
+		for (int i = 0; i < listPointsSize; i++) {
+			float dist = this->euclidianSpace->EuclidianDistance(optimizedPivot, listPoints.at(i));
+			m2[&listPoints.at(i)] = dist;
+		}
+		map<Point*, float>::iterator it;
+		for (it = m2.begin(); it != m2.end(); it++)
+		{
+			if (it->second<median) {
+				leftTree.push_back(*it->first);
+			}
+			else {
+				rightTree.push_back(*it->first);
+			}
+		}
+		float d1 = numeric_limits<float>::max();
+		float d3 = numeric_limits<float>::max();
+		float d2 = numeric_limits<float>::min();
+		float d4 = numeric_limits<float>::min();
+		for (int i = 0; i < leftTree.size(); i++) {
+			float distPivotPoint = this->euclidianSpace->EuclidianDistance(optimizedPivot, leftTree.at(i));
+			if (distPivotPoint <= d1) {
+				d1 = distPivotPoint;
+			}
+			if (distPivotPoint >= d2) {
+				d2 = distPivotPoint;
+			}
+		}
+
+		for (int i = 0; i < rightTree.size(); i++) {
+			float distPivotPoint = this->euclidianSpace->EuclidianDistance(optimizedPivot, rightTree.at(i));
+			if (distPivotPoint <= d3) {
+				d3 = distPivotPoint;
+			}
+			if (distPivotPoint >= d4) {
+				d4 = distPivotPoint;
+			}
+		}
+		currentNode->setD(1, d1);
+		currentNode->setD(2, d2);
+		currentNode->setD(3, d3);
+		currentNode->setD(4, d4);
+
+		currentNode->left = new Node();
+		buildMetricTreeBasic(leftTree, currentNode->left);
+		currentNode->right = new Node();
+		buildMetricTreeBasic(rightTree, currentNode->right);
+
+	}
+
+
+
+}
+
+
+
+Point MetricTree::getBestPivot(vector<Point> listPoints)
+{
+	if (listPoints.size() > 0) {
+		int dim = listPoints.at(0).getDimension();
+		float * values = new float[dim];
+
+		for (int i = 0; i < dim; i++) {
+			float sumDim = 0.0;
+			for (int j = 0; j < listPoints.size(); j++) {
+				sumDim += listPoints.at(j).getAt(i);
+			}
+			float meanDim = sumDim / listPoints.size();
+			values[i] = meanDim;
+		}
+
+		Point center = Point(dim, values);
+		float maxDistSoFar = 0.0;
+		Point bestPivotSoFar = listPoints.at(0);
+
+		for (int j = 0; j < listPoints.size(); j++) {
+			float currentDist = this->euclidianSpace->EuclidianDistance(center, listPoints.at(j));
+			if (currentDist > maxDistSoFar) {
+				maxDistSoFar = currentDist;
+				bestPivotSoFar = listPoints.at(j);
+			}
+		}
+
+		return bestPivotSoFar;
+	}
+	return Point();
 }
 
 bool MetricTree::searchMetricTreePrunning(Node *T, Point *q)
@@ -199,6 +323,7 @@ bool MetricTree::searchMetricTreeDefeatist(Node * T, Point * q)
 
 	if (pivot == *q) {
 		cout << "Point founded" << endl;
+
 		return true;
 	}
 
