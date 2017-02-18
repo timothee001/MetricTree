@@ -23,131 +23,9 @@ MetricTree::MetricTree(EuclidianSpace* euclidianSpace)
 }
 
 
-void MetricTree::buildMetricTree(vector<Point> listPoints, Node * currentNode)
-{
-
-	Node * newNode = new Node();
-	
-	newNode = currentNode;
-	
-	if (this->nodeCount == 0) {
-		this->root = currentNode;
-	}
-
-	this->allNodes.push_back(newNode);
-
-	if(listPoints.size()>1){
-	
-	int listPointsSize = listPoints.size();
-	int randNumberOfPoints = 1 + (rand() % (int)(listPointsSize));
-	vector<int> pointsSelected;
-	do {
-		int randNum = (rand() % (int)(listPointsSize));
-		if (!(find(pointsSelected.begin(), pointsSelected.end(), randNum) != pointsSelected.end())) {
-			pointsSelected.push_back(randNum);
-		}
-
-	} while (pointsSelected.size() < randNumberOfPoints);
-
-	cout << "Select Q space " << endl;
-	cout << "max number of point : " << listPointsSize << endl;
-	cout << "number of random point :" << randNumberOfPoints << endl;
-
-	for (int i = 0; i < randNumberOfPoints; i++) {
-		cout << "selected point for Q " << i << " :" << pointsSelected.at(i) << endl;
-	}
-	Point randPivot = listPoints.at(pointsSelected.at(0));
-	newNode->setPivot(randPivot);
-	cout << "selected pivot (point at 0) (v) : " << randPivot;
-	map<Point*, float> m;
-	vector<float> allDistances;
-	for (int i = 0; i < randNumberOfPoints; i++) {
-	
-		float dist = this->euclidianSpace->EuclidianDistance(randPivot, listPoints.at(pointsSelected.at(i)));
-		m[&listPoints.at(pointsSelected.at(i))] = dist;
-		allDistances.push_back(dist);
-
-		cout << "Dist point for Q " << i << " to pivot " << dist << endl;
-	}
-
-	float median = this->median(allDistances);
-	cout << "median : " << median << endl;
-
-	vector<Point> leftTree;
-	vector<Point> rightTree;
 
 
-	map<Point*, float> m2;
-
-	for (int i = 0; i < listPointsSize; i++) {
-
-		float dist = this->euclidianSpace->EuclidianDistance(randPivot, listPoints.at(i));
-		m2[&listPoints.at(i)] = dist;
-		cout << "Dist point for S " << i << " to pivot " << dist << endl;
-	}
-
-	map<Point*, float>::iterator it;
-	for (it = m2.begin(); it != m2.end(); it++)
-	{	
-		if (it->second<median) {
-			cout << "to left " << *it->first<<endl;
-			leftTree.push_back(*it->first);
-		}
-		else {
-			cout << "to right " << *it->first << endl;
-			rightTree.push_back(*it->first);
-		}	
-	}
-
-	float d1 = numeric_limits<float>::max();
-	float d3 = numeric_limits<float>::max();
-	float d2 = numeric_limits<float>::min();
-	float d4 = numeric_limits<float>::min();
-
-	for (int i = 0; i < leftTree.size(); i++) {
-		float distPivotPoint = this->euclidianSpace->EuclidianDistance(randPivot, leftTree.at(i));
-		if (distPivotPoint <= d1) {
-			d1 = distPivotPoint;
-		}
-
-		if (distPivotPoint >= d2) {
-			d2 = distPivotPoint;
-		}
-	}
-
-	for (int i = 0; i < rightTree.size(); i++) {
-		float distPivotPoint = this->euclidianSpace->EuclidianDistance(randPivot, rightTree.at(i));
-		if (distPivotPoint <= d3) {
-			d3 = distPivotPoint;
-		}
-
-		if (distPivotPoint >= d4) {
-			d4 = distPivotPoint;
-		}
-	}
-
-	newNode->setD(1, d1);
-	newNode->setD(2, d2);
-	newNode->setD(3, d3);
-	newNode->setD(4, d4);
-
-	cout << *newNode << endl;
-
-	Node * left = new Node();
-	Node * right = new Node();
-	newNode->left = left;
-	newNode->right = right;
-	this->buildMetricTree(leftTree, left);
-	this->buildMetricTree(rightTree, right);
-	
-
-	}else if (listPoints.size() <= 1 && this->nodeCount >0) {
-		newNode->setLeafTrue();
-	}
-	this->nodeCount++;
-}
-
-void MetricTree::buildMetricTree2(vector<Point> listPoints, Node * currentNode)
+void MetricTree::buildMetricTreeBasic(vector<Point> listPoints, Node * currentNode)
 {
 	this->allNodes.push_back(currentNode);
 	if (listPoints.size() <= 1) {
@@ -223,9 +101,9 @@ void MetricTree::buildMetricTree2(vector<Point> listPoints, Node * currentNode)
 		currentNode->setD(4, d4);
 
 		currentNode->left = new Node();
-		buildMetricTree2(leftTree, currentNode->left);
+		buildMetricTreeBasic(leftTree, currentNode->left);
 		currentNode->right = new Node();
-		buildMetricTree2(rightTree, currentNode->right);
+		buildMetricTreeBasic(rightTree, currentNode->right);
 		
 	}
 
@@ -233,7 +111,11 @@ void MetricTree::buildMetricTree2(vector<Point> listPoints, Node * currentNode)
 
 }
 
-bool MetricTree::search_MetricTree(Node *T, Point *q)
+void MetricTree::buildMetricTreeOptimized(vector<Point> listPoints, Node * currentNode)
+{
+}
+
+bool MetricTree::searchMetricTreePrunning(Node *T, Point *q)
 {
 	
 	cout << "Node explored n° : " << this->numberOfNodeExplored << endl;
@@ -284,7 +166,7 @@ bool MetricTree::search_MetricTree(Node *T, Point *q)
 			cout << "We reach the leaf " << endl;
 		//return false;
 		}
-		this->search_MetricTree(T->left, q);
+		this->searchMetricTreePrunning(T->left, q);
 	}
 
 	if ((I >= Irmin) & (I <= Irmax)) {
@@ -295,10 +177,85 @@ bool MetricTree::search_MetricTree(Node *T, Point *q)
 			cout << "We reach the leaf " << endl;
 			//return false;
 		}
-		this->search_MetricTree(T->right, q);
+		this->searchMetricTreePrunning(T->right, q);
 	}
 
 	return true;	
+}
+
+bool MetricTree::searchMetricTreeDefeatist(Node * T, Point * q)
+{
+
+	
+	cout << "Node explored n° : " << this->numberOfNodeExplored << endl;
+	cout << "search Metric function called " << endl;
+	cout << "Current Node explored : " << *T << endl;
+
+	float tau = 0.0;
+	if (this->numberOfNodeExplored == 0.0) {
+		tau = std::numeric_limits<float>::max();
+	}
+	Point pivot = T->getPivot();
+
+	if (pivot == *q) {
+		cout << "Point founded" << endl;
+		return true;
+	}
+
+
+	if (T->isALeaf()) {
+		return false;
+	}
+	else {
+		/*cout << "On the left " << *(T->left) << endl;
+		cout << "On the right " << *(T->right) << endl;*/
+	}
+
+	float I = this->euclidianSpace->EuclidianDistance(pivot, *q);
+
+
+	if (I < tau) {
+		tau = I;
+		this->nearestNeighbour = pivot;
+	}
+
+
+
+	float Ilmin = T->getD(1) - tau;
+	float Ilmax = T->getD(2) + tau;
+	float Irmin = T->getD(3) - tau;
+	float Irmax = T->getD(4) + tau;
+
+	cout << "I : " << I << endl;
+	cout << "tau : " << tau << endl;
+	cout << "Ilmin : " << Ilmin << endl;
+	cout << "Ilmax : " << Ilmax << endl;
+	cout << "Irmin : " << Irmin << endl;
+	cout << "Irmax : " << Irmax << endl << endl;
+
+	
+		cout << "I : " << I << " Ilmin : " << Ilmin << " Ilmax : " << Ilmax << endl;
+		this->numberOfNodeExplored++;
+		cout << "We search left node " << endl;
+		if (T->isALeaf()) {
+			cout << "We reach the leaf " << endl;
+			//return false;
+		}
+		this->searchMetricTreeDefeatist(T->left, q);
+	
+
+	
+		cout << "I : " << I << " Irmin : " << Irmin << " Irmax : " << Irmax << endl;
+		this->numberOfNodeExplored++;
+		cout << "We search right node " << endl;
+		if (T->isALeaf()) {
+			cout << "We reach the leaf " << endl;
+			//return false;
+		}
+		this->searchMetricTreeDefeatist(T->right, q);
+	
+
+	return true;
 }
 
 float MetricTree::median(vector<float> scores)

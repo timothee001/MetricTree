@@ -71,6 +71,27 @@ ostream& operator<<(ostream& os, const Point& p)
 }
 
 
+bool Point::operator==(Point & point) const
+{
+	bool equal = true;
+
+	if (this->dimension != point.dimension) {
+		return false;
+	}
+
+	for (int i = 0; i < this->dimension; i++) {
+
+		if (this->point[i] != point.getAt(i)) {
+			return false;
+		}
+
+	}
+
+	
+
+	return equal;
+}
+
 Point::~Point()
 {
 

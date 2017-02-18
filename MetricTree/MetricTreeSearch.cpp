@@ -35,13 +35,17 @@ using namespace std;
 int main()
 {
 	srand(time(NULL));
-	EuclidianSpace e(100, 10, 10, 10, 100, 500);
+	EuclidianSpace e(40, 10, 10, 10, 100, 500);
 	cout <<"Euclidian space"<<endl<< e<<endl;
 	MetricTree mt(&e);
-	mt.buildMetricTree2(e.getAllPoints(),mt.root);
-	cout << mt <<endl;
+	mt.buildMetricTreeBasic(e.getAllPoints(),mt.root);
+	//cout << mt <<endl;
 	int searchPointId = 2;
-	mt.search_MetricTree(&mt.getRoot(), &e.getPointAt(searchPointId));
+
+
+
+	mt.searchMetricTreeDefeatist(&mt.getRoot(), &e.getPointAt(searchPointId));
+	//mt.searchMetricTreePrunning(&mt.getRoot(), &e.getPointAt(searchPointId));
 	//cout << "NN found : " << mt.nearestNeighbour << endl;
 	//cout << mt << endl;
 

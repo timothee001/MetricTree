@@ -17,6 +17,7 @@ public:
 	void setAt(int dim, float value);
 	int getDimension();
 	friend ostream& operator<<(ostream& os, const Point& p);
+	bool operator==(Point& point)const;
 	virtual ~Point();
 };
 

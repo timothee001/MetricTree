@@ -18,9 +18,10 @@ public:
 	int getNodeCount();
 	Node getRoot();
 	MetricTree(EuclidianSpace* euclidianSpace);
-	void buildMetricTree(vector<Point> listPoints, Node *currentNode);
-	void buildMetricTree2(vector<Point> listPoints, Node *currentNode);
-	bool search_MetricTree(Node *T, Point *q);
+	void buildMetricTreeBasic(vector<Point> listPoints, Node *currentNode);
+	void buildMetricTreeOptimized(vector<Point> listPoints, Node *currentNode);
+	bool searchMetricTreePrunning(Node *T, Point *q);
+	bool searchMetricTreeDefeatist(Node *T, Point *q);
 	static float median(vector<float> scores);
 	friend ostream& operator<<(ostream& os, const MetricTree& mt);
 	virtual ~MetricTree();
