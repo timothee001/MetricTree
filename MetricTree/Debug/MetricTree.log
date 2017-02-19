@@ -7,10 +7,11 @@ c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\me
 c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(136): warning C4018: '<': signed/unsigned mismatch
 c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(173): warning C4018: '<': signed/unsigned mismatch
 c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(183): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(218): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(227): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(234): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(407): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(421): warning C4018: '<': signed/unsigned mismatch
+c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(212): warning C4018: '<': signed/unsigned mismatch
+c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(214): warning C4018: '<': signed/unsigned mismatch
+c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(233): warning C4018: '<': signed/unsigned mismatch
+c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(245): warning C4018: '<': signed/unsigned mismatch
+c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(420): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(434): warning C4018: '<': signed/unsigned mismatch
   MetricTree.vcxproj -> C:\Users\Timothee\Documents\Visual Studio 2015\Projects\MetricTree\Debug\MetricTreesSearch.exe
   MetricTree.vcxproj -> C:\Users\Timothee\Documents\Visual Studio 2015\Projects\MetricTree\Debug\MetricTreesSearch.pdb (Full PDB)

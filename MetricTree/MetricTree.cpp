@@ -195,9 +195,9 @@ void MetricTree::buildMetricTreeOptimized(vector<Point> listPoints, Node * curre
 		currentNode->setD(4, d4);
 
 		currentNode->left = new Node();
-		buildMetricTreeBasic(leftTree, currentNode->left);
+		buildMetricTreeOptimized(leftTree, currentNode->left);
 		currentNode->right = new Node();
-		buildMetricTreeBasic(rightTree, currentNode->right);
+		buildMetricTreeOptimized(rightTree, currentNode->right);
 
 	}
 
@@ -205,7 +205,22 @@ void MetricTree::buildMetricTreeOptimized(vector<Point> listPoints, Node * curre
 
 }
 
+Point MetricTree::getBestPivot2(vector<Point> listPoints) {
 
+	Point bestPivotSoFar = Point();
+	float maxDistSoFar = 0.0;
+	for (int i = 0; i < listPoints.size(); i++) {
+		float currentDist = 0.0;
+		for (int j = 0; j < listPoints.size(); j++) {
+			currentDist += this->euclidianSpace->EuclidianDistance(listPoints.at(i), listPoints.at(j));
+		}
+		if (currentDist >= maxDistSoFar) {
+			maxDistSoFar = currentDist;
+			bestPivotSoFar=listPoints.at(i);
+		}
+	}
+	return bestPivotSoFar;
+}
 
 Point MetricTree::getBestPivot(vector<Point> listPoints)
 {
@@ -222,12 +237,8 @@ Point MetricTree::getBestPivot(vector<Point> listPoints)
 			values[i] = meanDim;
 		}
 
-		float * values2 = new float[dim];
-		for (int i = 0; i < dim; i++) {
-			values2[i] = this->euclidianSpace->bound;
-		}
 
-		Point center = Point(dim, values2);
+		Point center = Point(dim, values);
 		float maxDistSoFar = 0.0;
 		Point bestPivotSoFar = listPoints.at(0);
 
@@ -243,6 +254,8 @@ Point MetricTree::getBestPivot(vector<Point> listPoints)
 	}
 	return Point();
 }
+
+
 
 bool MetricTree::searchMetricTreePrunning(Node *T, Point *q)
 {

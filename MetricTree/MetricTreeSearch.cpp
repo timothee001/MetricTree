@@ -35,7 +35,7 @@ using namespace std;
 int main()
 {
 	srand(time(NULL));
-	EuclidianSpace e(40, 10, 10, 1000, 100, 500);
+	EuclidianSpace e(40, 2, 2, 1000, 100, 500);
 	cout <<"Euclidian space"<<endl<< e<<endl;
 	MetricTree mt(&e);
 	mt.buildMetricTreeBasic(e.getAllPoints(), mt.root);
