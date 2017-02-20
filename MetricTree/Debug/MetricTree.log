@@ -1,4 +1,8 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (MetricTree.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  stdafx.cpp
+  Point.cpp
+  Node.cpp
+  MetricTreeSearch.cpp
   MetricTree.cpp
 c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(47): warning C4018: '<': signed/unsigned mismatch
 c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(79): warning C4018: '<': signed/unsigned mismatch
@@ -9,9 +13,14 @@ c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\me
 c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(183): warning C4018: '<': signed/unsigned mismatch
 c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(212): warning C4018: '<': signed/unsigned mismatch
 c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(214): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(233): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(245): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(420): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(434): warning C4018: '<': signed/unsigned mismatch
+c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(235): warning C4018: '<': signed/unsigned mismatch
+c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(247): warning C4018: '<': signed/unsigned mismatch
+c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(422): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(436): warning C4018: '<': signed/unsigned mismatch
+  EuclidianSpace.cpp
+c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\euclidianspace.cpp(12): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\euclidianspace.cpp(29): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Generating Code...
+c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\node.cpp(62): warning C4715: 'Node::getD': not all control paths return a value
   MetricTree.vcxproj -> C:\Users\Timothee\Documents\Visual Studio 2015\Projects\MetricTree\Debug\MetricTreesSearch.exe
   MetricTree.vcxproj -> C:\Users\Timothee\Documents\Visual Studio 2015\Projects\MetricTree\Debug\MetricTreesSearch.pdb (Full PDB)

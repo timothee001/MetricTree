@@ -224,7 +224,9 @@ Point MetricTree::getBestPivot2(vector<Point> listPoints) {
 
 Point MetricTree::getBestPivot(vector<Point> listPoints)
 {
-	if (listPoints.size() > 0) {
+	if(listPoints.size()==1){
+		return listPoints.at(0);
+	}else if (listPoints.size() > 0) {
 		int dim = listPoints.at(0).getDimension();
 		float * values = new float[dim];
 
@@ -260,9 +262,9 @@ Point MetricTree::getBestPivot(vector<Point> listPoints)
 bool MetricTree::searchMetricTreePrunning(Node *T, Point *q)
 {
 	
-	/*cout << "Node explored n° : " << this->numberOfNodeExplored << endl;
+	cout << "Node explored n° : " << this->numberOfNodeExplored << endl;
 	cout << "search Metric function called " << endl;
-	cout << "Current Node explored : " << *T << endl;*/
+	cout << "Current Node explored : " << *T << endl;
 
 	float tau = 0.0;
 	if (this->numberOfNodeExplored==0.0) {
