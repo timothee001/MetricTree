@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "Point.h"
 #include "string.h"
-#include "EuclidianSpace.h"
+#include "HyperSpace.h"
 #include <iostream>
 #include <fstream>
 #include <ostream>
@@ -15,71 +15,35 @@
 
 using namespace std;
 
-
-#include <SBL/CSB/Least_RMSD_cartesian.hpp>
-#include <CGAL/Cartesian_d.h>
-#include <CGAL/Cartesian.h>
-//Works with primitive types
-
-typedef CGAL::Cartesian_d<double>                      K;
-typedef K::Point_d                                     Conformation;
-typedef SBL::CSB::T_Least_RMSD_cartesian<Conformation> LRMSD;
-
-
-
 int main()
 {
-	//srand(time(NULL));
-	//EuclidianSpace e(40, 2, 2, 1000);
-	//cout <<"Euclidian space"<<endl<< e<<endl;
-	//MetricTree mt(&e);
-	//mt.buildMetricTreeBasic(e.getAllPoints(), mt.root);
-	//int searchPointId = 2;
-	//mt.searchMetricTreePrunning(&mt.getRoot(), &e.getPointAt(searchPointId));
-	//cout << "we searched :" << e.getPointAt(searchPointId) << endl;
-	//cout << "Number of node explored  (without optimizaion): " << mt.numberOfNodeExplored << endl;
+	srand(time(NULL));
+	HyperSpace e(40, 2, 2, 1000);
+	cout <<"Euclidian space"<<endl<< e<<endl;
+	MetricTree mt(&e);
+	mt.buildMetricTreeBasic(e.getAllPoints(), mt.root);
+	int searchPointId = 2;
+	mt.searchMetricTreePrunning(&mt.getRoot(), &e.getPointAt(searchPointId));
+	cout << "we searched :" << e.getPointAt(searchPointId) << endl;
+	cout << "Number of node explored  (without optimizaion): " << mt.numberOfNodeExplored << endl;
 
-	//MetricTree mt2(&e);
-	//mt2.buildMetricTreeOptimized(e.getAllPoints(), mt2.root);
-	//mt2.searchMetricTreePrunning(&mt2.getRoot(), &e.getPointAt(searchPointId));
-	//cout << "we searched :" << e.getPointAt(searchPointId) << endl;
-	//cout << "Number of node explored (with optimizaion): " << mt2.numberOfNodeExplored << endl;
+	MetricTree mt2(&e);
+	mt2.buildMetricTreeOptimized(e.getAllPoints(), mt2.root);
+	mt2.searchMetricTreePrunning(&mt2.getRoot(), &e.getPointAt(searchPointId));
+	cout << "we searched :" << e.getPointAt(searchPointId) << endl;
+	cout << "Number of node explored (with optimizaion): " << mt2.numberOfNodeExplored << endl;
 
 
-	//mt.buildMetricTreeBasic(e.getAllPoints(),mt.root);
-	//cout << mt <<endl;
+	mt.buildMetricTreeBasic(e.getAllPoints(),mt.root);
+	cout << mt <<endl;
 	
 
-	//mt.searchMetricTreeDefeatist(&mt.getRoot(), &e.getPointAt(searchPointId));
+	mt.searchMetricTreeDefeatist(&mt.getRoot(), &e.getPointAt(searchPointId));
 
-	//cout << "NN found : " << mt.nearestNeighbour << endl;
-	//cout << mt << endl;
+	cout << "NN found : " << mt.nearestNeighbour << endl;
+	cout << mt << endl;
 
-	//cout << "Root" << mt.getRoot();
-
-	srand((unsigned int)time(NULL));
-
-	vector<double> coords_p;
-	vector<double> coords_q;
-
-	for (int i = 0; i < 6000; i++) {
-		coords_p.push_back(8);
-
-	}
-	for (int i = 0; i < 6000; i++) {
-
-		coords_q.push_back(((float)rand() / (float)(RAND_MAX)) * 112);
-
-	}
-
-
-	Conformation p(coords_p.size(), coords_p.begin(), coords_p.end());
-	Conformation q(coords_q.size(), coords_q.begin(), coords_q.end());
-
-	//cout << q;
-
-	LRMSD distance;
-	std::cout << "LRMSD: " << distance(p, q) << std::endl;
+	cout << "Root" << mt.getRoot();
 
 	system("pause");
 

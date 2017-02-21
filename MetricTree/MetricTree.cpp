@@ -1,9 +1,5 @@
 #include "stdafx.h"
 #include "MetricTree.h"
-#include <algorithm>
-#include <map>
-#include <iostream>
-#include <cassert>
 
 
 int MetricTree::getNodeCount()
@@ -16,10 +12,10 @@ Node MetricTree::getRoot()
 	return *this->root;;
 }
 
-MetricTree::MetricTree(EuclidianSpace* euclidianSpace)
+MetricTree::MetricTree(HyperSpace* euclidianSpace)
 {
 	this->root = new Node();
-	this->euclidianSpace = euclidianSpace;
+	this->hyperSpace = euclidianSpace;
 }
 
 
@@ -50,7 +46,7 @@ void MetricTree::buildMetricTreeBasic(vector<Point> listPoints, Node * currentNo
 		map<Point*, float> m;
 		vector<float> allDistances;
 		for (int i = 0; i < randNumberOfPoints; i++) {
-			float dist = this->euclidianSpace->EuclidianDistance(randPivot, listPoints.at(pointsSelected.at(i)));
+			float dist = this->hyperSpace->EuclidianDistance(randPivot, listPoints.at(pointsSelected.at(i)));
 			m[&listPoints.at(pointsSelected.at(i))] = dist;
 			allDistances.push_back(dist);
 		}
@@ -59,7 +55,7 @@ void MetricTree::buildMetricTreeBasic(vector<Point> listPoints, Node * currentNo
 		vector<Point> rightTree;
 		map<Point*, float> m2;
 		for (int i = 0; i < listPointsSize; i++) {
-			float dist = this->euclidianSpace->EuclidianDistance(randPivot, listPoints.at(i));
+			float dist = this->hyperSpace->EuclidianDistance(randPivot, listPoints.at(i));
 			m2[&listPoints.at(i)] = dist;
 		}
 		map<Point*, float>::iterator it;
@@ -77,7 +73,7 @@ void MetricTree::buildMetricTreeBasic(vector<Point> listPoints, Node * currentNo
 		float d2 = numeric_limits<float>::min();
 		float d4 = numeric_limits<float>::min();
 		for (int i = 0; i < leftTree.size(); i++) {
-			float distPivotPoint = this->euclidianSpace->EuclidianDistance(randPivot, leftTree.at(i));
+			float distPivotPoint = this->hyperSpace->EuclidianDistance(randPivot, leftTree.at(i));
 			if (distPivotPoint <= d1) {
 				d1 = distPivotPoint;
 			}
@@ -87,7 +83,7 @@ void MetricTree::buildMetricTreeBasic(vector<Point> listPoints, Node * currentNo
 		}
 
 		for (int i = 0; i < rightTree.size(); i++) {
-			float distPivotPoint = this->euclidianSpace->EuclidianDistance(randPivot, rightTree.at(i));
+			float distPivotPoint = this->hyperSpace->EuclidianDistance(randPivot, rightTree.at(i));
 			if (distPivotPoint <= d3) {
 				d3 = distPivotPoint;
 			}
@@ -107,6 +103,92 @@ void MetricTree::buildMetricTreeBasic(vector<Point> listPoints, Node * currentNo
 		
 	}
 
+
+
+}
+
+void MetricTree::buildMetricTreeBasicOnConformations(vector<Point> listPoints, Node * currentNode)
+{
+
+	this->allNodes.push_back(currentNode);
+	if (listPoints.size() <= 1) {
+		currentNode->setLeafTrue();
+		if (listPoints.size() == 1) {
+			currentNode->setPivot(listPoints.at(0));
+		}
+	}
+	else {
+
+		int listPointsSize = listPoints.size();
+		int randNumberOfPoints = 1 + (rand() % (int)(listPointsSize));
+		vector<int> pointsSelected;
+		do {
+			int randNum = (rand() % (int)(listPointsSize));
+			if (!(find(pointsSelected.begin(), pointsSelected.end(), randNum) != pointsSelected.end())) {
+				pointsSelected.push_back(randNum);
+			}
+		} while (pointsSelected.size() < randNumberOfPoints);
+		Point randPivot = listPoints.at(pointsSelected.at(0));
+		currentNode->setPivot(randPivot);
+		map<Point*, float> m;
+		vector<float> allDistances;
+		for (int i = 0; i < randNumberOfPoints; i++) {
+			float dist = this->hyperSpace->LRMSDDistance(randPivot, listPoints.at(pointsSelected.at(i)));
+			m[&listPoints.at(pointsSelected.at(i))] = dist;
+			allDistances.push_back(dist);
+		}
+		float median = this->median(allDistances);
+		vector<Point> leftTree;
+		vector<Point> rightTree;
+		map<Point*, float> m2;
+		for (int i = 0; i < listPointsSize; i++) {
+			float dist = this->hyperSpace->LRMSDDistance(randPivot, listPoints.at(i));
+			m2[&listPoints.at(i)] = dist;
+		}
+		map<Point*, float>::iterator it;
+		for (it = m2.begin(); it != m2.end(); it++)
+		{
+			if (it->second<median) {
+				leftTree.push_back(*it->first);
+			}
+			else {
+				rightTree.push_back(*it->first);
+			}
+		}
+		float d1 = numeric_limits<float>::max();
+		float d3 = numeric_limits<float>::max();
+		float d2 = numeric_limits<float>::min();
+		float d4 = numeric_limits<float>::min();
+		for (int i = 0; i < leftTree.size(); i++) {
+			float distPivotPoint = this->hyperSpace->LRMSDDistance(randPivot, leftTree.at(i));
+			if (distPivotPoint <= d1) {
+				d1 = distPivotPoint;
+			}
+			if (distPivotPoint >= d2) {
+				d2 = distPivotPoint;
+			}
+		}
+
+		for (int i = 0; i < rightTree.size(); i++) {
+			float distPivotPoint = this->hyperSpace->LRMSDDistance(randPivot, rightTree.at(i));
+			if (distPivotPoint <= d3) {
+				d3 = distPivotPoint;
+			}
+			if (distPivotPoint >= d4) {
+				d4 = distPivotPoint;
+			}
+		}
+		currentNode->setD(1, d1);
+		currentNode->setD(2, d2);
+		currentNode->setD(3, d3);
+		currentNode->setD(4, d4);
+
+		currentNode->left = new Node();
+		buildMetricTreeBasicOnConformations(leftTree, currentNode->left);
+		currentNode->right = new Node();
+		buildMetricTreeBasicOnConformations(rightTree, currentNode->right);
+
+	}
 
 
 }
@@ -144,7 +226,7 @@ void MetricTree::buildMetricTreeOptimized(vector<Point> listPoints, Node * curre
 		map<Point*, float> m;
 		vector<float> allDistances;
 		for (int i = 0; i < randNumberOfPoints; i++) {
-			float dist = this->euclidianSpace->EuclidianDistance(optimizedPivot, listPoints.at(pointsSelected.at(i)));
+			float dist = this->hyperSpace->EuclidianDistance(optimizedPivot, listPoints.at(pointsSelected.at(i)));
 			m[&listPoints.at(pointsSelected.at(i))] = dist;
 			allDistances.push_back(dist);
 		}
@@ -153,7 +235,7 @@ void MetricTree::buildMetricTreeOptimized(vector<Point> listPoints, Node * curre
 		vector<Point> rightTree;
 		map<Point*, float> m2;
 		for (int i = 0; i < listPointsSize; i++) {
-			float dist = this->euclidianSpace->EuclidianDistance(optimizedPivot, listPoints.at(i));
+			float dist = this->hyperSpace->EuclidianDistance(optimizedPivot, listPoints.at(i));
 			m2[&listPoints.at(i)] = dist;
 		}
 		map<Point*, float>::iterator it;
@@ -171,7 +253,7 @@ void MetricTree::buildMetricTreeOptimized(vector<Point> listPoints, Node * curre
 		float d2 = numeric_limits<float>::min();
 		float d4 = numeric_limits<float>::min();
 		for (int i = 0; i < leftTree.size(); i++) {
-			float distPivotPoint = this->euclidianSpace->EuclidianDistance(optimizedPivot, leftTree.at(i));
+			float distPivotPoint = this->hyperSpace->EuclidianDistance(optimizedPivot, leftTree.at(i));
 			if (distPivotPoint <= d1) {
 				d1 = distPivotPoint;
 			}
@@ -181,7 +263,7 @@ void MetricTree::buildMetricTreeOptimized(vector<Point> listPoints, Node * curre
 		}
 
 		for (int i = 0; i < rightTree.size(); i++) {
-			float distPivotPoint = this->euclidianSpace->EuclidianDistance(optimizedPivot, rightTree.at(i));
+			float distPivotPoint = this->hyperSpace->EuclidianDistance(optimizedPivot, rightTree.at(i));
 			if (distPivotPoint <= d3) {
 				d3 = distPivotPoint;
 			}
@@ -205,6 +287,98 @@ void MetricTree::buildMetricTreeOptimized(vector<Point> listPoints, Node * curre
 
 }
 
+void MetricTree::buildMetricTreeOptimizedOnConformations(vector<Point> listPoints, Node * currentNode)
+{
+	this->allNodes.push_back(currentNode);
+	if (listPoints.size() <= 1) {
+		currentNode->setLeafTrue();
+		if (listPoints.size() == 1) {
+			currentNode->setPivot(listPoints.at(0));
+		}
+	}
+	else {
+
+		int listPointsSize = listPoints.size();
+		int randNumberOfPoints = 1 + (rand() % (int)(listPointsSize));
+		vector<int> pointsSelected;
+		do {
+			int randNum = (rand() % (int)(listPointsSize));
+			if (!(find(pointsSelected.begin(), pointsSelected.end(), randNum) != pointsSelected.end())) {
+				pointsSelected.push_back(randNum);
+			}
+		} while (pointsSelected.size() < randNumberOfPoints);
+
+		vector<Point> pointsSelectedValues;
+		for (int i = 0; i < pointsSelected.size(); i++) {
+			pointsSelectedValues.push_back(listPoints.at(pointsSelected.at(i)));
+		}
+
+		Point optimizedPivot = this->getBestPivot(pointsSelectedValues);
+
+
+		currentNode->setPivot(optimizedPivot);
+		map<Point*, float> m;
+		vector<float> allDistances;
+		for (int i = 0; i < randNumberOfPoints; i++) {
+			float dist = this->hyperSpace->LRMSDDistance(optimizedPivot, listPoints.at(pointsSelected.at(i)));
+			m[&listPoints.at(pointsSelected.at(i))] = dist;
+			allDistances.push_back(dist);
+		}
+		float median = this->median(allDistances);
+		vector<Point> leftTree;
+		vector<Point> rightTree;
+		map<Point*, float> m2;
+		for (int i = 0; i < listPointsSize; i++) {
+			float dist = this->hyperSpace->LRMSDDistance(optimizedPivot, listPoints.at(i));
+			m2[&listPoints.at(i)] = dist;
+		}
+		map<Point*, float>::iterator it;
+		for (it = m2.begin(); it != m2.end(); it++)
+		{
+			if (it->second<median) {
+				leftTree.push_back(*it->first);
+			}
+			else {
+				rightTree.push_back(*it->first);
+			}
+		}
+		float d1 = numeric_limits<float>::max();
+		float d3 = numeric_limits<float>::max();
+		float d2 = numeric_limits<float>::min();
+		float d4 = numeric_limits<float>::min();
+		for (int i = 0; i < leftTree.size(); i++) {
+			float distPivotPoint = this->hyperSpace->LRMSDDistance(optimizedPivot, leftTree.at(i));
+			if (distPivotPoint <= d1) {
+				d1 = distPivotPoint;
+			}
+			if (distPivotPoint >= d2) {
+				d2 = distPivotPoint;
+			}
+		}
+
+		for (int i = 0; i < rightTree.size(); i++) {
+			float distPivotPoint = this->hyperSpace->LRMSDDistance(optimizedPivot, rightTree.at(i));
+			if (distPivotPoint <= d3) {
+				d3 = distPivotPoint;
+			}
+			if (distPivotPoint >= d4) {
+				d4 = distPivotPoint;
+			}
+		}
+		currentNode->setD(1, d1);
+		currentNode->setD(2, d2);
+		currentNode->setD(3, d3);
+		currentNode->setD(4, d4);
+
+		currentNode->left = new Node();
+		buildMetricTreeOptimizedOnConformations(leftTree, currentNode->left);
+		currentNode->right = new Node();
+		buildMetricTreeOptimizedOnConformations(rightTree, currentNode->right);
+
+	}
+
+}
+
 Point MetricTree::getBestPivot2(vector<Point> listPoints) {
 
 	Point bestPivotSoFar = Point();
@@ -212,7 +386,7 @@ Point MetricTree::getBestPivot2(vector<Point> listPoints) {
 	for (int i = 0; i < listPoints.size(); i++) {
 		float currentDist = 0.0;
 		for (int j = 0; j < listPoints.size(); j++) {
-			currentDist += this->euclidianSpace->EuclidianDistance(listPoints.at(i), listPoints.at(j));
+			currentDist += this->hyperSpace->EuclidianDistance(listPoints.at(i), listPoints.at(j));
 		}
 		if (currentDist >= maxDistSoFar) {
 			maxDistSoFar = currentDist;
@@ -245,7 +419,43 @@ Point MetricTree::getBestPivot(vector<Point> listPoints)
 		Point bestPivotSoFar = listPoints.at(0);
 
 		for (int j = 0; j < listPoints.size(); j++) {
-			float currentDist = this->euclidianSpace->EuclidianDistance(center, listPoints.at(j));
+			float currentDist = this->hyperSpace->EuclidianDistance(center, listPoints.at(j));
+			if (currentDist > maxDistSoFar) {
+				maxDistSoFar = currentDist;
+				bestPivotSoFar = listPoints.at(j);
+			}
+		}
+
+		return bestPivotSoFar;
+	}
+	return Point();
+}
+
+Point MetricTree::getBestPivotConformation(vector<Point> listPoints)
+{
+	if (listPoints.size() == 1) {
+		return listPoints.at(0);
+	}
+	else if (listPoints.size() > 0) {
+		int dim = listPoints.at(0).getDimension();
+		float * values = new float[dim];
+
+		for (int i = 0; i < dim; i++) {
+			float sumDim = 0.0;
+			for (int j = 0; j < listPoints.size(); j++) {
+				sumDim += listPoints.at(j).getAt(i);
+			}
+			float meanDim = sumDim / listPoints.size();
+			values[i] = meanDim;
+		}
+
+
+		Point center = Point(dim, values);
+		float maxDistSoFar = 0.0;
+		Point bestPivotSoFar = listPoints.at(0);
+
+		for (int j = 0; j < listPoints.size(); j++) {
+			float currentDist = this->hyperSpace->LRMSDDistance(center, listPoints.at(j));
 			if (currentDist > maxDistSoFar) {
 				maxDistSoFar = currentDist;
 				bestPivotSoFar = listPoints.at(j);
@@ -280,7 +490,7 @@ bool MetricTree::searchMetricTreePrunning(Node *T, Point *q)
 		cout << "On the right " << *(T->right) << endl;*/
 	}
 
-	float I = this->euclidianSpace->EuclidianDistance(pivot, *q);
+	float I = this->hyperSpace->EuclidianDistance(pivot, *q);
 	
 
 	if (I < tau) {
@@ -327,6 +537,73 @@ bool MetricTree::searchMetricTreePrunning(Node *T, Point *q)
 	return true;	
 }
 
+bool MetricTree::searchMetricTreePrunningConformation(Node * T, Point * q)
+{
+	cout << "Node explored n° : " << this->numberOfNodeExplored << endl;
+	cout << "search Metric function called " << endl;
+	cout << "Current Node explored : " << *T << endl;
+
+	float tau = 0.0;
+	if (this->numberOfNodeExplored == 0.0) {
+		tau = std::numeric_limits<float>::max();
+	}
+	Point pivot = T->getPivot();
+
+	if (T->isALeaf()) {
+		return false;
+	}
+	else {
+		/*cout << "On the left " << *(T->left) << endl;
+		cout << "On the right " << *(T->right) << endl;*/
+	}
+
+	float I = this->hyperSpace->LRMSDDistance(pivot, *q);
+
+
+	if (I < tau) {
+		tau = I;
+		this->nearestNeighbour = pivot;
+	}
+
+
+
+	float Ilmin = T->getD(1) - tau;
+	float Ilmax = T->getD(2) + tau;
+	float Irmin = T->getD(3) - tau;
+	float Irmax = T->getD(4) + tau;
+
+	//cout << "I : " << I << endl;
+	//cout << "tau : " << tau << endl;
+	//cout << "Ilmin : " << Ilmin << endl;
+	//cout << "Ilmax : " << Ilmax << endl;
+	//cout << "Irmin : " << Irmin << endl;
+	//cout << "Irmax : " << Irmax << endl <<endl;
+
+	if ((I >= Ilmin) & (I <= Ilmax)) {
+		//cout << "I : " << I << " Ilmin : " << Ilmin << " Ilmax : " << Ilmax << endl;
+		this->numberOfNodeExplored++;
+		//cout << "We search left node " << endl;
+		if (T->isALeaf()) {
+			//cout << "We reach the leaf " << endl;
+			//return false;
+		}
+		this->searchMetricTreePrunningConformation(T->left, q);
+	}
+
+	if ((I >= Irmin) & (I <= Irmax)) {
+		//cout << "I : " << I << " Irmin : " << Irmin << " Irmax : " << Irmax << endl;
+		this->numberOfNodeExplored++;
+		/*cout << "We search right node " << endl;*/
+		if (T->isALeaf()) {
+			/*	cout << "We reach the leaf " << endl;*/
+			//return false;
+		}
+		this->searchMetricTreePrunningConformation(T->right, q);
+	}
+
+	return true;
+}
+
 bool MetricTree::searchMetricTreeDefeatist(Node * T, Point * q)
 {
 
@@ -356,7 +633,7 @@ bool MetricTree::searchMetricTreeDefeatist(Node * T, Point * q)
 		cout << "On the right " << *(T->right) << endl;*/
 	}
 
-	float I = this->euclidianSpace->EuclidianDistance(pivot, *q);
+	float I = this->hyperSpace->EuclidianDistance(pivot, *q);
 
 
 	if (I < tau) {
@@ -399,6 +676,81 @@ bool MetricTree::searchMetricTreeDefeatist(Node * T, Point * q)
 		}
 		this->searchMetricTreeDefeatist(T->right, q);
 	
+
+	return true;
+}
+
+bool MetricTree::searchMetricTreeDefeatistConformation(Node * T, Point * q)
+{
+
+	/*cout << "Node explored n° : " << this->numberOfNodeExplored << endl;
+	cout << "search Metric function called " << endl;
+	cout << "Current Node explored : " << *T << endl;*/
+
+	float tau = 0.0;
+	if (this->numberOfNodeExplored == 0.0) {
+		tau = std::numeric_limits<float>::max();
+	}
+	Point pivot = T->getPivot();
+
+	if (pivot == *q) {
+		/*	cout << "Point founded" << endl;*/
+
+		return true;
+	}
+
+
+	if (T->isALeaf()) {
+		return false;
+	}
+	else {
+		/*cout << "On the left " << *(T->left) << endl;
+		cout << "On the right " << *(T->right) << endl;*/
+	}
+
+	float I = this->hyperSpace->LRMSDDistance(pivot, *q);
+
+
+	if (I < tau) {
+		tau = I;
+		this->nearestNeighbour = pivot;
+	}
+
+
+
+	float Ilmin = T->getD(1) - tau;
+	float Ilmax = T->getD(2) + tau;
+	float Irmin = T->getD(3) - tau;
+	float Irmax = T->getD(4) + tau;
+
+	//cout << "I : " << I << endl;
+	//cout << "tau : " << tau << endl;
+	//cout << "Ilmin : " << Ilmin << endl;
+	//cout << "Ilmax : " << Ilmax << endl;
+	//cout << "Irmin : " << Irmin << endl;
+	//cout << "Irmax : " << Irmax << endl << endl;
+
+	//
+	//	cout << "I : " << I << " Ilmin : " << Ilmin << " Ilmax : " << Ilmax << endl;
+	this->numberOfNodeExplored++;
+	/*cout << "We search left node " << endl;*/
+	if (T->isALeaf()) {
+		/*cout << "We reach the leaf " << endl;*/
+		//return false;
+	}
+	this->searchMetricTreeDefeatistConformation(T->left, q);
+
+
+
+	/*cout << "I : " << I << " Irmin : " << Irmin << " Irmax : " << Irmax << endl;*/
+	this->numberOfNodeExplored++;
+	/*cout << "We search right node " << endl;*/
+	if (T->isALeaf()) {
+		/*cout << "We reach the leaf " << endl;*/
+		//return false;
+	}
+	this->searchMetricTreeDefeatistConformation(T->right, q);
+
 
 	return true;
 }

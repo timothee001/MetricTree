@@ -149,7 +149,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EuclidianSpace.h" />
+    <ClInclude Include="HyperSpace.h" />
     <ClInclude Include="MetricTree.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="Point.h" />
@@ -157,7 +157,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EuclidianSpace.cpp" />
+    <ClCompile Include="HyperSpace.cpp" />
     <ClCompile Include="MetricTree.cpp" />
     <ClCompile Include="MetricTreeSearch.cpp" />
     <ClCompile Include="Node.cpp" />
