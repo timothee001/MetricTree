@@ -69,8 +69,8 @@ float HyperSpace::EuclidianDistance(Point & a, Point & b)
 
 float HyperSpace::LRMSDDistance(Point & a, Point & b)
 {
-	vector<float> coords_p;
-	vector<float> coords_q;
+	vector<double> coords_p;
+	vector<double> coords_q;
 
 	for (int i = 0; i < a.getDimension(); i++) {
 		coords_p.push_back(a.getAt(i));
@@ -85,7 +85,8 @@ float HyperSpace::LRMSDDistance(Point & a, Point & b)
 	//cout << q;
 
 	LRMSD distance;
-	return distance(p, q);
+	double dist = distance(p, q);
+	return dist;
 }
 
 

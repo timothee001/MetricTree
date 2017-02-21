@@ -12,7 +12,7 @@
 #include <CGAL/Cartesian.h>
 //Works with primitive types
 
-typedef CGAL::Cartesian_d<float>                      K;
+typedef CGAL::Cartesian_d<double>                      K;
 typedef K::Point_d                                     Conformation;
 typedef SBL::CSB::T_Least_RMSD_cartesian<Conformation> LRMSD;
 
