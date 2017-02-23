@@ -18,7 +18,7 @@ using namespace std;
 int main()
 {
 	srand(time(NULL));
-	HyperSpace e(30, 60, 60, 1000);
+	HyperSpace e(50, 600, 600, 1000);
 	cout <<"Hyper space"<<endl<< e<<endl;
 	MetricTree mt(&e);
 	mt.buildMetricTreeBasicOnConformations(e.getAllPoints(), mt.root);

@@ -112,6 +112,7 @@ void MetricTree::buildMetricTreeBasicOnConformations(vector<Point> listPoints, N
 
 	this->allNodes.push_back(currentNode);
 	if (listPoints.size() <= 1) {
+		//If we are at a leaf we set it as true and if the size is one we choose the point as the pivot
 		currentNode->setLeafTrue();
 		if (listPoints.size() == 1) {
 			currentNode->setPivot(listPoints.at(0));
@@ -120,7 +121,10 @@ void MetricTree::buildMetricTreeBasicOnConformations(vector<Point> listPoints, N
 	else {
 
 		int listPointsSize = listPoints.size();
+		// we choose a random number of point among the existing one
 		int randNumberOfPoints = 1 + (rand() % (int)(listPointsSize));
+
+		//This part select randNumberOfPoints point that are different and put them in a vector
 		vector<int> pointsSelected;
 		do {
 			int randNum = (rand() % (int)(listPointsSize));
@@ -128,8 +132,13 @@ void MetricTree::buildMetricTreeBasicOnConformations(vector<Point> listPoints, N
 				pointsSelected.push_back(randNum);
 			}
 		} while (pointsSelected.size() < randNumberOfPoints);
+
+
+		//We choose arbitrary the first point of the list as pivot (it will be optimize with the pivot selection)
 		Point randPivot = listPoints.at(pointsSelected.at(0));
 		currentNode->setPivot(randPivot);
+
+		//we compute all the distances between the rand previous pivot and the randNumberOfPoints points selected previously
 		map<Point*, float> m;
 		vector<float> allDistances;
 		for (int i = 0; i < randNumberOfPoints; i++) {
@@ -137,9 +146,14 @@ void MetricTree::buildMetricTreeBasicOnConformations(vector<Point> listPoints, N
 			m[&listPoints.at(pointsSelected.at(i))] = dist;
 			allDistances.push_back(dist);
 		}
+
+		//We take the median of all our values
 		float median = this->median(allDistances);
+
 		vector<Point> leftTree;
 		vector<Point> rightTree;
+
+		//we get of the distance overall between the pivot and the current remaining list of point to split it into two
 		map<Point*, float> m2;
 		for (int i = 0; i < listPointsSize; i++) {
 			float dist = this->hyperSpace->LRMSDDistance(randPivot, listPoints.at(i));
@@ -148,9 +162,11 @@ void MetricTree::buildMetricTreeBasicOnConformations(vector<Point> listPoints, N
 		map<Point*, float>::iterator it;
 		for (it = m2.begin(); it != m2.end(); it++)
 		{
+			//If it is inferior to the median it goes on left subtree
 			if (it->second<median) {
 				leftTree.push_back(*it->first);
 			}
+			//If it is superior to the median it goes on right subtree
 			else {
 				rightTree.push_back(*it->first);
 			}
@@ -159,6 +175,7 @@ void MetricTree::buildMetricTreeBasicOnConformations(vector<Point> listPoints, N
 		float d3 = numeric_limits<float>::max();
 		float d2 = numeric_limits<float>::min();
 		float d4 = numeric_limits<float>::min();
+		// We compute all the d distances as shown in the algorithm
 		for (int i = 0; i < leftTree.size(); i++) {
 			float distPivotPoint = this->hyperSpace->LRMSDDistance(randPivot, leftTree.at(i));
 			if (distPivotPoint <= d1) {
@@ -183,6 +200,7 @@ void MetricTree::buildMetricTreeBasicOnConformations(vector<Point> listPoints, N
 		currentNode->setD(3, d3);
 		currentNode->setD(4, d4);
 
+		//We recurse on subtree we have created
 		currentNode->left = new Node();
 		buildMetricTreeBasicOnConformations(leftTree, currentNode->left);
 		currentNode->right = new Node();
