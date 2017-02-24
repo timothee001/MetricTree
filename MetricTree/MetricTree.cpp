@@ -331,7 +331,7 @@ void MetricTree::buildMetricTreeOptimizedOnConformations(vector<Point> listPoint
 			pointsSelectedValues.push_back(listPoints.at(pointsSelected.at(i)));
 		}
 
-		Point optimizedPivot = this->getBestPivot(pointsSelectedValues);
+		Point optimizedPivot = this->getBestPivotConformation(pointsSelectedValues);
 
 
 		currentNode->setPivot(optimizedPivot);
@@ -494,6 +494,12 @@ bool MetricTree::searchMetricTreePrunning(Node *T, Point *q)
 	cout << "search Metric function called " << endl;
 	cout << "Current Node explored : " << *T << endl;
 
+	if (T->getPivot() == *q) {
+		cout << "Point has been found at this Node" << endl;
+		this->found = true;
+		return true;
+	}
+
 	float tau = 0.0;
 	if (this->numberOfNodeExplored==0.0) {
 		tau = std::numeric_limits<float>::max();
@@ -523,14 +529,14 @@ bool MetricTree::searchMetricTreePrunning(Node *T, Point *q)
 	float Irmin = T->getD(3) - tau;
 	float Irmax = T->getD(4) + tau;
 
-	//cout << "I : " << I << endl;
-	//cout << "tau : " << tau << endl;
-	//cout << "Ilmin : " << Ilmin << endl;
-	//cout << "Ilmax : " << Ilmax << endl;
-	//cout << "Irmin : " << Irmin << endl;
-	//cout << "Irmax : " << Irmax << endl <<endl;
+	cout << "I : " << I << endl;
+	cout << "tau : " << tau << endl;
+	cout << "Ilmin : " << Ilmin << endl;
+	cout << "Ilmax : " << Ilmax << endl;
+	cout << "Irmin : " << Irmin << endl;
+	cout << "Irmax : " << Irmax << endl <<endl;
 
-	if ((I >= Ilmin) & (I <= Ilmax)) {
+	if ((I >= Ilmin) & (I <= Ilmax) & !this->found) {
 		//cout << "I : " << I << " Ilmin : " << Ilmin << " Ilmax : " << Ilmax << endl;
 		this->numberOfNodeExplored++;
 		//cout << "We search left node " << endl;
@@ -541,7 +547,7 @@ bool MetricTree::searchMetricTreePrunning(Node *T, Point *q)
 		this->searchMetricTreePrunning(T->left, q);
 	}
 
-	if ((I >= Irmin) & (I <= Irmax)) {
+	if ((I >= Irmin) & (I <= Irmax) & !this->found) {
 		//cout << "I : " << I << " Irmin : " << Irmin << " Irmax : " << Irmax << endl;
 		this->numberOfNodeExplored++;
 		/*cout << "We search right node " << endl;*/
@@ -560,6 +566,12 @@ bool MetricTree::searchMetricTreePrunningConformation(Node * T, Point * q)
 	cout << "Node explored n° : " << this->numberOfNodeExplored << endl;
 	cout << "search Metric function called " << endl;
 	cout << "Current Node explored : " << *T << endl;
+
+	if (T->getPivot() == *q) {
+		cout << "Point has been found at this Node" << endl;
+		this->found = true;
+		return true;
+	}
 
 	float tau = 0.0;
 	if (this->numberOfNodeExplored == 0.0) {
@@ -590,14 +602,14 @@ bool MetricTree::searchMetricTreePrunningConformation(Node * T, Point * q)
 	float Irmin = T->getD(3) - tau;
 	float Irmax = T->getD(4) + tau;
 
-	//cout << "I : " << I << endl;
-	//cout << "tau : " << tau << endl;
-	//cout << "Ilmin : " << Ilmin << endl;
-	//cout << "Ilmax : " << Ilmax << endl;
-	//cout << "Irmin : " << Irmin << endl;
-	//cout << "Irmax : " << Irmax << endl <<endl;
+	cout << "I : " << I << endl;
+	cout << "tau : " << tau << endl;
+	cout << "Ilmin : " << Ilmin << endl;
+	cout << "Ilmax : " << Ilmax << endl;
+	cout << "Irmin : " << Irmin << endl;
+	cout << "Irmax : " << Irmax << endl <<endl;
 
-	if ((I >= Ilmin) & (I <= Ilmax)) {
+	if ((I >= Ilmin) & (I <= Ilmax) & !this->found) {
 		//cout << "I : " << I << " Ilmin : " << Ilmin << " Ilmax : " << Ilmax << endl;
 		this->numberOfNodeExplored++;
 		//cout << "We search left node " << endl;
@@ -608,7 +620,7 @@ bool MetricTree::searchMetricTreePrunningConformation(Node * T, Point * q)
 		this->searchMetricTreePrunningConformation(T->left, q);
 	}
 
-	if ((I >= Irmin) & (I <= Irmax)) {
+	if ((I >= Irmin) & (I <= Irmax) & !this->found) {
 		//cout << "I : " << I << " Irmin : " << Irmin << " Irmax : " << Irmax << endl;
 		this->numberOfNodeExplored++;
 		/*cout << "We search right node " << endl;*/
@@ -626,9 +638,15 @@ bool MetricTree::searchMetricTreeDefeatist(Node * T, Point * q)
 {
 
 	
-	/*cout << "Node explored n° : " << this->numberOfNodeExplored << endl;
+	cout << "Node explored n° : " << this->numberOfNodeExplored << endl;
 	cout << "search Metric function called " << endl;
-	cout << "Current Node explored : " << *T << endl;*/
+	cout << "Current Node explored : " << *T << endl;
+
+	if (T->getPivot() == *q) {
+		cout << "Point has been found at this Node" << endl;
+		this->found = true;
+		return true;
+	}
 
 	float tau = 0.0;
 	if (this->numberOfNodeExplored == 0.0) {
@@ -666,33 +684,33 @@ bool MetricTree::searchMetricTreeDefeatist(Node * T, Point * q)
 	float Irmin = T->getD(3) - tau;
 	float Irmax = T->getD(4) + tau;
 
-	//cout << "I : " << I << endl;
-	//cout << "tau : " << tau << endl;
-	//cout << "Ilmin : " << Ilmin << endl;
-	//cout << "Ilmax : " << Ilmax << endl;
-	//cout << "Irmin : " << Irmin << endl;
-	//cout << "Irmax : " << Irmax << endl << endl;
-
-	//
-	//	cout << "I : " << I << " Ilmin : " << Ilmin << " Ilmax : " << Ilmax << endl;
+	cout << "I : " << I << endl;
+	cout << "tau : " << tau << endl;
+	cout << "Ilmin : " << Ilmin << endl;
+	cout << "Ilmax : " << Ilmax << endl;
+	cout << "Irmin : " << Irmin << endl;
+	cout << "Irmax : " << Irmax << endl << endl;
+	if ((I >= Ilmin) & (I <= Ilmax) & !this->found) {
+		//cout << "I : " << I << " Ilmin : " << Ilmin << " Ilmax : " << Ilmax << endl;
 		this->numberOfNodeExplored++;
-		/*cout << "We search left node " << endl;*/
+		//cout << "We search left node " << endl;
 		if (T->isALeaf()) {
-			/*cout << "We reach the leaf " << endl;*/
+			//cout << "We reach the leaf " << endl;
 			//return false;
 		}
 		this->searchMetricTreeDefeatist(T->left, q);
-	
+	}
 
-	
-		/*cout << "I : " << I << " Irmin : " << Irmin << " Irmax : " << Irmax << endl;*/
+	else{
+		//cout << "I : " << I << " Irmin : " << Irmin << " Irmax : " << Irmax << endl;
 		this->numberOfNodeExplored++;
 		/*cout << "We search right node " << endl;*/
 		if (T->isALeaf()) {
-			/*cout << "We reach the leaf " << endl;*/
+			/*	cout << "We reach the leaf " << endl;*/
 			//return false;
 		}
 		this->searchMetricTreeDefeatist(T->right, q);
+	}
 	
 
 	return true;
@@ -701,9 +719,15 @@ bool MetricTree::searchMetricTreeDefeatist(Node * T, Point * q)
 bool MetricTree::searchMetricTreeDefeatistConformation(Node * T, Point * q)
 {
 
-	/*cout << "Node explored n° : " << this->numberOfNodeExplored << endl;
+	cout << "Node explored n° : " << this->numberOfNodeExplored << endl;
 	cout << "search Metric function called " << endl;
-	cout << "Current Node explored : " << *T << endl;*/
+	cout << "Current Node explored : " << *T << endl;
+
+	if (T->getPivot() == *q) {
+		cout << "Point has been found at this Node" << endl;
+		this->found = true;
+		return true;
+	}
 
 	float tau = 0.0;
 	if (this->numberOfNodeExplored == 0.0) {
@@ -741,35 +765,34 @@ bool MetricTree::searchMetricTreeDefeatistConformation(Node * T, Point * q)
 	float Irmin = T->getD(3) - tau;
 	float Irmax = T->getD(4) + tau;
 
-	//cout << "I : " << I << endl;
-	//cout << "tau : " << tau << endl;
-	//cout << "Ilmin : " << Ilmin << endl;
-	//cout << "Ilmax : " << Ilmax << endl;
-	//cout << "Irmin : " << Irmin << endl;
-	//cout << "Irmax : " << Irmax << endl << endl;
+	cout << "I : " << I << endl;
+	cout << "tau : " << tau << endl;
+	cout << "Ilmin : " << Ilmin << endl;
+	cout << "Ilmax : " << Ilmax << endl;
+	cout << "Irmin : " << Irmin << endl;
+	cout << "Irmax : " << Irmax << endl << endl;
 
-	//
-	//	cout << "I : " << I << " Ilmin : " << Ilmin << " Ilmax : " << Ilmax << endl;
-	this->numberOfNodeExplored++;
-	/*cout << "We search left node " << endl;*/
-	if (T->isALeaf()) {
-		/*cout << "We reach the leaf " << endl;*/
-		//return false;
+	if ((I >= Ilmin) & (I <= Ilmax) & !this->found) {
+		//cout << "I : " << I << " Ilmin : " << Ilmin << " Ilmax : " << Ilmax << endl;
+		this->numberOfNodeExplored++;
+		//cout << "We search left node " << endl;
+		if (T->isALeaf()) {
+			//cout << "We reach the leaf " << endl;
+			//return false;
+		}
+		this->searchMetricTreeDefeatistConformation(T->left, q);
 	}
-	this->searchMetricTreeDefeatistConformation(T->left, q);
 
-
-
-	/*cout << "I : " << I << " Irmin : " << Irmin << " Irmax : " << Irmax << endl;*/
-	this->numberOfNodeExplored++;
-	/*cout << "We search right node " << endl;*/
-	if (T->isALeaf()) {
-		/*cout << "We reach the leaf " << endl;*/
-		//return false;
+	else{
+		//cout << "I : " << I << " Irmin : " << Irmin << " Irmax : " << Irmax << endl;
+		this->numberOfNodeExplored++;
+		/*cout << "We search right node " << endl;*/
+		if (T->isALeaf()) {
+			/*	cout << "We reach the leaf " << endl;*/
+			//return false;
+		}
+		this->searchMetricTreeDefeatistConformation(T->right, q);
 	}
-	this->searchMetricTreeDefeatistConformation(T->right, q);
-
-
 	return true;
 }
 
