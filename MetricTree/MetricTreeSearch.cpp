@@ -29,13 +29,13 @@ int main()
 */
 	MetricTree mt2(&e);
 	mt2.buildMetricTreeBasic(e.getAllPoints(), mt2.root);
-	mt2.searchMetricTreeDefeatist(&mt2.getRoot(), &e.getPointAt(searchPointId));
+	mt2.searchMetricTreePrunning(&mt2.getRoot(), &e.getPointAt(searchPointId));
 	cout << "we searched :" << e.getPointAt(searchPointId) << endl;
 	cout << "Number of node explored (without optimizaion): " << mt2.numberOfNodeExplored << endl;
 
 	MetricTree mt3(&e);
 	mt3.buildMetricTreeOptimized(e.getAllPoints(), mt3.root);
-	mt3.searchMetricTreeDefeatist(&mt3.getRoot(), &e.getPointAt(searchPointId));
+	mt3.searchMetricTreePrunning(&mt3.getRoot(), &e.getPointAt(searchPointId));
 	cout << "we searched :" << e.getPointAt(searchPointId) << endl;
 	cout << "Number of node explored (with optimizaion): " << mt3.numberOfNodeExplored << endl;
 

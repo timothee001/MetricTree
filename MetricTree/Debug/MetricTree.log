@@ -1,26 +1,5 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (MetricTree.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  MetricTree.cpp
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(43): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(75): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(85): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(134): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(179): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(189): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(233): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(236): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(273): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(283): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(327): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(330): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(367): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(377): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(404): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(406): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(427): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(439): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(463): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(475): warning C4018: '<': signed/unsigned mismatch
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(815): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictree.cpp(829): warning C4018: '<': signed/unsigned mismatch
+  MetricTreeSearch.cpp
+c:\users\timothee\documents\visual studio 2015\projects\metrictree\metrictree\metrictreesearch.cpp(20): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   MetricTree.vcxproj -> C:\Users\Timothee\Documents\Visual Studio 2015\Projects\MetricTree\Debug\MetricTreesSearch.exe
   MetricTree.vcxproj -> C:\Users\Timothee\Documents\Visual Studio 2015\Projects\MetricTree\Debug\MetricTreesSearch.pdb (Full PDB)
