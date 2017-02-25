@@ -25,12 +25,14 @@ class HyperSpace
 	
 public:
 	int bound;
+	HyperSpace();
 	HyperSpace(int pointsCount, int pointsDimension,int dimensionSize, int bound);
 	HyperSpace(int pointsCount, int pointsDimension, int dimensionSize, int bound, float mean, float stdDev);
 	Point getPointAt(int pos);
 	vector<Point> getAllPoints();
 	static float EuclidianDistance(Point &a, Point &b);
 	static float LRMSDDistance(Point &a, Point &b);
+	int getPointsCount();
 	friend ostream& operator<<(ostream& os, const HyperSpace& p);
 	virtual ~HyperSpace();
 };

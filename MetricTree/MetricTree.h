@@ -19,10 +19,12 @@ class MetricTree
 public:
 	int numberOfNodeExplored = 0;
 	bool found = 0;
+	void reinitializeSearchParams();
 	Node *root;
 	Point nearestNeighbour;
 	int getNodeCount();
 	Node getRoot();
+	MetricTree();
 	MetricTree(HyperSpace* hyperspace);
 	void buildMetricTreeBasic(vector<Point> listPoints, Node *currentNode);
 	void buildMetricTreeBasicOnConformations(vector<Point> listPoints, Node *currentNode);

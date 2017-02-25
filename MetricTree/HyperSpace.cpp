@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "HyperSpace.h"
 
+HyperSpace::HyperSpace()
+{
+}
+
 HyperSpace::HyperSpace(int pointsCount, int pointsDimension ,int dimensionSize,int bound)
 {
 	this->pointsCount = pointsCount;
@@ -87,6 +91,11 @@ float HyperSpace::LRMSDDistance(Point & a, Point & b)
 	LRMSD distance;
 	double dist = distance(p, q);
 	return dist;
+}
+
+int HyperSpace::getPointsCount()
+{
+	return this->pointsCount;
 }
 
 

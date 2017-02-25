@@ -2,6 +2,12 @@
 #include "MetricTree.h"
 
 
+void MetricTree::reinitializeSearchParams()
+{
+	this->found = false;
+	this->numberOfNodeExplored = 0;
+}
+
 int MetricTree::getNodeCount()
 {
 	return this->nodeCount;
@@ -10,6 +16,10 @@ int MetricTree::getNodeCount()
 Node MetricTree::getRoot()
 {
 	return *this->root;;
+}
+
+MetricTree::MetricTree()
+{
 }
 
 MetricTree::MetricTree(HyperSpace* euclidianSpace)
