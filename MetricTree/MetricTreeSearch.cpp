@@ -28,7 +28,9 @@ int main()
 
 	while (allParams.size() == 0) {
 	char params[256];
-	cin.getline(params, 256);
+	cout << "type parameters (4 or 6 separated by space) : ";
+	cin.getline(params, 256); 
+	cout << endl;
 	std::string s = string(params);
 	std::istringstream is(s);
 	int n;
@@ -105,11 +107,12 @@ int main()
 		}
 
 		int typeOfSearch = 0;
-		while (typeOfSearch < 1 || typeOfSearch>2)
+		while (typeOfSearch < 1 || typeOfSearch>3)
 		{
 			cout << "What type of search do you want to do ?" << endl;
 			cout << "1: Prunning condition" << endl;
 			cout << "2: Defeastist" << endl;
+			cout << "3: Both" << endl;
 			cin >> typeOfSearch;
 		}
 
@@ -125,21 +128,69 @@ int main()
 			mt.searchMetricTreePrunning(&mt.getRoot(), pointToSearch);
 			cout << "we searched :" << *pointToSearch << endl;
 			cout << "Number of node explored : " << mt.numberOfNodeExplored << endl;
+			if (!mt.found) {
+				cout << "The point hasn't been found !" << endl;
+			}
 		}else if (typeOfSearch == 1 && (choice == 2 || choice == 4)) {
 			mt.searchMetricTreePrunningConformation(&mt.getRoot(), pointToSearch);
 			cout << "we searched :" << *pointToSearch << endl;
 			cout << "Number of node explored : " << mt.numberOfNodeExplored << endl;
+			if (!mt.found) {
+				cout << "The point hasn't been found !" << endl;
+			}
 		}
 		else if (typeOfSearch == 2 && (choice == 1 || choice == 3)) {
 			mt.searchMetricTreeDefeatist(&mt.getRoot(), pointToSearch);
 			cout << "we searched :" << *pointToSearch << endl;
 			cout << "Number of node explored : " << mt.numberOfNodeExplored << endl;
+			if (!mt.found) {
+				cout << "The point hasn't been found !" << endl;
+			}
 		}
 		else if (typeOfSearch == 2 && (choice == 2 || choice == 4)) {
 			mt.searchMetricTreeDefeatistConformation(&mt.getRoot(), pointToSearch);
 			cout << "we searched :" << *pointToSearch << endl;
 			cout << "Number of node explored : " << mt.numberOfNodeExplored << endl;
+			if (!mt.found) {
+				cout << "The point hasn't been found !" << endl;
+			}
 		}
+		else if (typeOfSearch == 3 && (choice == 1 || choice == 3)) {
+			cout << "Defeatist " << endl;
+			mt.searchMetricTreeDefeatist(&mt.getRoot(), pointToSearch);
+			cout << "we searched :" << *pointToSearch << endl;
+			cout << "Number of node explored : " << mt.numberOfNodeExplored << endl;
+			if (!mt.found) {
+				cout << "The point hasn't been found !" << endl;
+			}
+			mt.reinitializeSearchParams();
+			cout << "Prunning " << endl;
+			mt.searchMetricTreePrunning(&mt.getRoot(), pointToSearch);
+			cout << "we searched :" << *pointToSearch << endl;
+			cout << "Number of node explored : " << mt.numberOfNodeExplored << endl;
+			if (!mt.found) {
+				cout << "The point hasn't been found !" << endl;
+			}
+
+		}
+		else if (typeOfSearch == 3 && (choice == 2 || choice == 4)) {
+			cout << "Defeatist " << endl;
+			mt.searchMetricTreeDefeatistConformation(&mt.getRoot(), pointToSearch);
+			cout << "we searched :" << *pointToSearch << endl;
+			cout << "Number of node explored : " << mt.numberOfNodeExplored << endl;
+			if (!mt.found) {
+				cout << "The point hasn't been found !" << endl;
+			}
+			mt.reinitializeSearchParams();
+			cout << "Prunning " << endl;
+			mt.searchMetricTreePrunningConformation(&mt.getRoot(), pointToSearch);
+			cout << "we searched :" << *pointToSearch << endl;
+			cout << "Number of node explored : " << mt.numberOfNodeExplored << endl;
+			if (!mt.found) {
+				cout << "The point hasn't been found !" << endl;
+			}
+		}
+
 		mt.reinitializeSearchParams();
 
 		int newSearch = 0;

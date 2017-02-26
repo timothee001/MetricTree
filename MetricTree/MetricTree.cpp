@@ -849,8 +849,8 @@ ostream & operator<<(ostream & os, const MetricTree & mt)
 		os << *mt.allNodes.at(i)<<endl;
 		
 		if (!mt.allNodes.at(i)->isALeaf()) {
-			os << "LEFT NODE : " << *(*mt.allNodes.at(i)).left << endl;
-			os << "RIGHT NODE : " << *(*mt.allNodes.at(i)).right << endl;
+			os << "LEFT NODE : " << (*(*mt.allNodes.at(i)).left).id << endl;
+			os << "RIGHT NODE : " << (*(*mt.allNodes.at(i)).right).id << endl;
 		}
 	}
 	os << "nombre de node " << nodeCount << endl;
