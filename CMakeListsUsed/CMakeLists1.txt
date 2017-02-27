@@ -1,0 +1,296 @@
+project(sbl)
+
+cmake_minimum_required(VERSION 2.6)
+
+if(NOT SBL_DIR)
+  set(SBL_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
+
+#--------------------------------------------------------------------#
+#               Checking if there is something specific to install   #
+#--------------------------------------------------------------------#
+
+if(NOT SBL_INSTALL)
+  if(SBL_VMD_PLUGINS)
+    set(SBL_INSTALL OFF)
+    set(SBL_SPECIFIC_INSTALL ON)
+  endif()
+  if(SBL_PYMOL_PLUGINS)
+    set(SBL_INSTALL OFF)
+    set(SBL_SPECIFIC_INSTALL ON)
+  endif()
+  if(SBL_DOWNLOAD_PROGRAMS_LINUX)
+    set(SBL_INSTALL OFF)
+    set(SBL_SPECIFIC_INSTALL ON)
+  endif()
+  if(SBL_DOWNLOAD_PROGRAMS_MACOS)
+    set(SBL_INSTALL OFF)
+    set(SBL_SPECIFIC_INSTALL ON)
+  endif()
+endif()
+
+if(NOT SBL_SPECIFIC_INSTALL)
+  set(SBL_INSTALL ON)
+endif()
+
+# list packages in Applications
+file(GLOB SBL_APPLICATIONS_CONFIGURED_PACKAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/Applications" "${CMAKE_CURRENT_SOURCE_DIR}/Applications/*")
+
+if(SBL_INSTALL)
+  #--------------------------------------------------------------------#
+  #                            Installing Documentation                #
+  #--------------------------------------------------------------------#
+
+  if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/doc) 
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc DESTINATION share)
+  endif()
+
+  #--------------------------------------------------------------------#
+  #                            Installing Core                         #
+  #--------------------------------------------------------------------#
+
+
+
+  # list packages in Core
+  file(GLOB SBL_CORE_CONFIGURED_PACKAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/Core" "${CMAKE_CURRENT_SOURCE_DIR}/Core/*")
+  
+  # install Core
+  foreach(dir ${SBL_CORE_CONFIGURED_PACKAGES})
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Core/${dir}/include) 
+      install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Core/${dir}/include DESTINATION .)
+    endif()
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Core/${dir}/src) 
+      install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Core/${dir}/src DESTINATION share/doc/SBL)
+    endif()
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Core/${dir}/doc) 
+      install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Core/${dir}/doc DESTINATION share)
+    endif()
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Core/${dir}/doc/SBL/${dir}/fig) 
+      install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Core/${dir}/doc/SBL/${dir}/fig DESTINATION share/doc/SBL)
+    endif()
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Core/${dir}/examples) 
+      install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Core/${dir}/examples DESTINATION share/doc/SBL)
+    endif() 
+    #  if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Core/${dir}/tests) 
+    #    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Core/${dir}/tests DESTINATION .)
+    #  endif()
+  endforeach()
+
+  #--------------------------------------------------------------------#
+  #                            Installing Models                   #
+  #--------------------------------------------------------------------#
+
+  # list packages in Models
+  file(GLOB SBL_MODELS_CONFIGURED_PACKAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/Models" "${CMAKE_CURRENT_SOURCE_DIR}/Models/*")
+
+  # install Models
+  foreach(dir ${SBL_MODELS_CONFIGURED_PACKAGES})
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Models/${dir}/include) 
+      install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Models/${dir}/include DESTINATION .)
+      #    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Models/${dir}/include DESTINATION share/doc/SBL/examples)
+    endif()
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Models/${dir}/doc) 
+      install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Models/${dir}/doc DESTINATION share)
+    endif()
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Models/${dir}/doc/SBL/${dir}/fig) 
+      install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Models/${dir}/doc/SBL/${dir}/fig DESTINATION share/doc/SBL)
+    endif()
+  endforeach()
+
+  #--------------------------------------------------------------------#
+  #                            Installing Applications             #
+  #--------------------------------------------------------------------#
+
+  # install Applications
+  foreach(dir ${SBL_APPLICATIONS_CONFIGURED_PACKAGES})
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Applications/${dir}/src) 
+      install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Applications/${dir}/src DESTINATION share/doc/SBL)
+    endif()
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Applications/${dir}/demos) 
+      install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Applications/${dir}/demos DESTINATION share/doc/SBL)
+    endif()
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Applications/${dir}/doc) 
+      install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Applications/${dir}/doc DESTINATION share)
+    endif()
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Applications/${dir}/doc/SBL/${dir}/fig) 
+      install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Applications/${dir}/doc/SBL/${dir}/fig DESTINATION share/doc/SBL)
+    endif()
+    #  if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Applications/${dir}/plugins) 
+    #    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Applications/${dir}/plugins DESTINATION applications/${dir})
+    #  endif()
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Applications/${dir}/python) 
+      install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Applications/${dir}/python DESTINATION lib)
+    endif()
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/python) 
+      install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/python DESTINATION lib)
+    endif()
+
+    file(GLOB SBL_PYTHON_SCRIPTS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/Applications/${dir}/scripts" "${CMAKE_CURRENT_SOURCE_DIR}/Applications/${dir}/scripts/*py")
+    foreach(f ${SBL_PYTHON_SCRIPTS})
+      install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/Applications/${dir}/scripts/${f} DESTINATION bin)
+    endforeach()
+  endforeach()
+
+  #--------------------------------------------------------------------#
+  #                            Installing Third party libraries        #
+  #--------------------------------------------------------------------#
+
+  #get last version of ESBTL
+  file(GLOB ESBTL_VERSIONS_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/Third_party_libraries/ESBTL/*")
+
+  install(DIRECTORY ${ESBTL_VERSIONS_DIRECTORIES}/include DESTINATION .)
+
+  #--------------------------------------------------------------------#
+  #                            Installing CMake                        #
+  #--------------------------------------------------------------------#
+
+  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake DESTINATION share)
+
+endif()
+
+#--------------------------------------------------------------------#
+#                            Installing VMD Plugins                  #
+#--------------------------------------------------------------------#
+
+if ( SBL_VMD_PLUGINS )
+  
+  install(CODE "execute_process(COMMAND ${CMAKE_COMMAND}
+        -DWIN32=${WIN32}
+        -DWIN64=${WIN64}
+        -DSBL_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+        -DSBL_VMD_PLUGINS=${SBL_VMD_PLUGINS}
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/SBL_InstallVMDPlugins.cmake)")
+  
+endif()
+
+if ( SBL_PYMOL_PLUGINS )
+  
+  install(CODE "execute_process(COMMAND ${CMAKE_COMMAND}
+        -DWIN32=${WIN32}
+        -DWIN64=${WIN64}
+        -DSBL_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+        -DSBL_PYMOL_PLUGINS=${SBL_PYMOL_PLUGINS}
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/SBL_InstallPymolPlugins.cmake)")
+
+endif()
+  
+if(SBL_DOWNLOAD_PROGRAMS_LINUX)
+  
+  set(DOWNLOAD_LIST "sbl-intervor-linux-64.tgz" "sbl-bif-linux-64.tgz" "sbl-ballcovor-linux-64.tgz" "sbl-vorlume-linux-64.tgz" "sbl-vorshell-bp-linux-64.tgz" "sbl-compatch-linux-64.tgz" "sbl-conf-ensemble-analysis-linux-64.tgz" "sbl-conf-ensemble-comparison-linux-64.tgz" "sbl-tg-builder-linux-64.tgz" "sbl-energy-landscape-analysis-linux-64.tgz" "sbl-energy-landscape-comparison-linux-64.tgz" "sbl-landexp-linux-64.tgz")
+  
+elseif(SBL_DOWNLOAD_PROGRAMS_MACOS)
+  
+  set(DOWNLOAD_LIST "sbl-intervor-macos.tgz" "sbl-bif-macos.tgz" "sbl-ballcovor-macos.tgz" "sbl-vorlume-macos.tgz" "sbl-vorshell-bp-macos.tgz" "sbl-compatch-macos.tgz" "sbl-conf-ensemble\
+-analysis-macos.tgz" "sbl-conf-ensemble-comparison-macos.tgz" "sbl-tg-builder-macos.tgz" "sbl-energy-landscape-analysis-macos.tgz" "sbl-energy-landscape-comparison-macos.tgz" "sbl-landexp-macos.tgz" )
+
+endif()
+
+if(SBL_DOWNLOAD_PROGRAMS_LINUX OR SBL_DOWNLOAD_PROGRAMS_MACOS)
+  
+  foreach(application_archive ${DOWNLOAD_LIST})
+    
+    string(REPLACE ".tgz" "" application_dir ${application_archive})
+
+    #Write a cmake file for downloading and untar the archive
+    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/download_${application_archive}.cmake "file(DOWNLOAD \"http://sbl.inria.fr/applications/${application_archive}\" \"${CMAKE_CURRENT_BINARY_DIR}/${application_archive}\")\n execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf \"${CMAKE_CURRENT_BINARY_DIR}/${application_archive}\")\n file(GLOB sbl_programs \"${CMAKE_CURRENT_BINARY_DIR}/${application_dir}/*\")\n foreach(sbl_program ${sbl_programs})\n install(FILES ${sbl_program} DESTINATION bin)\n endforeach()")
+    
+    #Add the commands
+    add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${application_archive}" COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/download_${application_archive}.cmake COMMENT "Downloading ${application_archive}")
+    
+    #Create the make target
+    add_custom_target(${application_dir} ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${application_archive}")
+    
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${application_dir}/bin DESTINATION . FILE_PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
+  endforeach()
+
+endif()
+
+#-----------------------------------------------------------------------#
+#                            Generation of tar.gz and zip for the moment#
+#-----------------------------------------------------------------------#
+
+include(InstallRequiredSystemLibraries)
+set(CPACK_GENERATOR "TGZ" "ZIP")
+if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/VERSION) 
+   file (STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/VERSION CPACK_PACKAGE_VERSION)
+else()
+   set(CPACK_PACKAGE_VERSION "1.0.0")
+endif()
+include(CPack) 
+
+#-------------------------------------------------------#
+#                            Generation of applications #
+#-------------------------------------------------------#
+
+if ( SBL_APPLICATIONS )
+
+# list applications in Applications
+file(GLOB APPLICATIONS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Applications/*")
+file(GLOB APPLICATIONS_CORE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Core/*")
+
+#include CMakeLists.txt
+foreach(dir ${APPLICATIONS_DIR})
+  file(GLOB REL_DIR RELATIVE "${dir}/src" "${dir}/src/*")
+  if(EXISTS ${dir}/src/${REL_DIR}/CMakeLists.txt) 
+      add_subdirectory(${dir}/src/${REL_DIR})
+    endif()
+endforeach()
+
+foreach(dir ${APPLICATIONS_CORE_DIR})
+    file(GLOB REL_DIR RELATIVE "${dir}/src" "${dir}/src/*")
+    if(EXISTS ${dir}/src/${REL_DIR}/CMakeLists.txt) 
+      add_subdirectory(${dir}/src/${REL_DIR})
+    endif()
+endforeach()
+
+endif()
+
+#-------------------------------------------------#
+#                            Generation of tests  #
+#-------------------------------------------------#
+
+if ( SBL_TESTS ) 
+
+  # list tests in Core
+  file(GLOB TESTS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Core/*")
+  #include CMakeLists.txt
+  foreach(dir ${TESTS_DIR})
+    file(GLOB REL_DIR RELATIVE "${dir}/tests" "${dir}/tests/*")
+    if (EXISTS ${dir}/tests/${REL_DIR}/CMakeLists.txt) 
+      add_subdirectory(${dir}/tests/${REL_DIR}) 
+    endif()
+  endforeach()
+
+  include(CTest) 
+
+endif()
+
+#-------------------------------------------------------#
+#                            Generation of examples     #
+#-------------------------------------------------------#
+
+if ( SBL_EXAMPLES )
+
+  # list applications in Applications
+  file(GLOB EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Core/*")
+
+  #include CMakeLists.txt
+  foreach(dir ${EXAMPLES_DIR})
+    file(GLOB REL_DIR RELATIVE "${dir}/examples" "${dir}/examples/*")
+    if(EXISTS ${dir}/examples/${REL_DIR}/CMakeLists.txt)
+      add_subdirectory(${dir}/examples/${REL_DIR})
+    endif()
+  endforeach()
+
+endif()
+
+#-------------------------------------------------------#
+
+# uninstall target
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/SBLUninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/SBLUninstall.cmake"
+    IMMEDIATE @ONLY)
+
+add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/SBLUninstall.cmake)
